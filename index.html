@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Music</title>
+<style>
+:root{--bg:#0f0f12;--card:#1b1b20;--card2:#25252c;--text:#f2f2f5;--muted:#9a9aa5;--accent:#1ed760;--danger:#ff5c5c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;padding-bottom:170px;min-height:100vh}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit}
+header{padding:20px 16px 8px;display:flex;align-items:center;gap:12px}
+header img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--card2)}
+header h1{font-size:20px}
+header small{color:var(--muted);display:block;font-size:13px}
+.logout{margin-left:auto;color:var(--muted);font-size:13px}
+main{padding:0 16px}
+h2{font-size:18px;margin:20px 0 10px}
+.row{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.tile{flex:0 0 130px;text-align:left}
+.tile img,.gtile img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--card2)}
+.tile b,.gtile b{display:block;font-size:13px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile span,.gtile span{font-size:12px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.gtile{text-align:left}
+.list{display:flex;flex-direction:column}
+.track{display:flex;align-items:center;gap:12px;padding:8px 0;text-align:left;width:100%}
+.track img{width:48px;height:48px;border-radius:6px;object-fit:cover;background:var(--card2);flex:none}
+.track div{min-width:0;flex:1}
+.track b{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.track.playing b{color:var(--accent)}
+.back{color:var(--muted);margin:14px 0 4px;font-size:14px}
+.search{width:100%;padding:12px 14px;border-radius:10px;border:none;background:var(--card2);color:var(--text);margin-top:14px}
+.center{padding:60px 20px;text-align:center}
+.center h1{font-size:28px;margin-bottom:8px}
+.center p{color:var(--muted);margin-bottom:22px;line-height:1.6}
+.btn{background:var(--accent);color:#000;font-weight:700;padding:13px 28px;border-radius:999px}
+.setup{background:var(--card);border-radius:14px;padding:18px;text-align:left;margin-top:10px;line-height:1.7;font-size:14px}
+.setup ol{padding-left:20px;color:var(--muted)}
+.setup code{background:var(--card2);padding:2px 6px;border-radius:4px;word-break:break-all;color:var(--text);font-size:12px}
+.setup input{width:100%;padding:11px;border-radius:8px;border:1px solid #333;background:var(--card2);color:var(--text);margin:12px 0}
+.notice{background:#3a2a10;color:#ffcf7a;padding:10px 12px;border-radius:10px;font-size:13px;margin-top:12px}
+.empty{color:var(--muted);font-size:14px;padding:10px 0}
+#player{position:fixed;left:0;right:0;bottom:62px;background:var(--card);padding:10px 14px 8px;border-top:1px solid #222}
+#player .top{display:flex;align-items:center;gap:10px}
+#player img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2)}
+#player .info{flex:1;min-width:0}
+#player .info b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#player .info span{font-size:12px;color:var(--muted)}
+.ctrl{display:flex;gap:4px;align-items:center}
+.ctrl button{width:38px;height:38px;border-radius:50%;font-size:18px}
+.ctrl .pp{background:var(--text);color:#000}
+.bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:6px}
+.bar input[type=range]{flex:1;accent-color:var(--accent)}
+.vol{width:70px!important;flex:none!important}
+nav{position:fixed;left:0;right:0;bottom:0;height:62px;background:#0a0a0c;display:flex;border-top:1px solid #222;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button i{font-style:normal;font-size:20px}
+nav button.on{color:var(--text)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const SCOPES = "user-read-private user-read-email playlist-read-private user-library-read user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state";
+const REDIRECT = location.origin + location.pathname;
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const store = {
+  get: k => { try { return localStorage.getItem(k) } catch { return null } },
+  set: (k,v) => { try { localStorage.setItem(k,v) } catch {} },
+  del: k => { try { localStorage.removeItem(k) } catch {} }
+};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const img = (images) => images?.[images.length > 1 ? 1 : 0]?.url || "";
+const fmt = ms => { const s = Math.floor(ms/1000); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0") };
+
+let deviceId = null, player = null, me = null, tab = "home", state = null, posTimer = null;
+
+/* ---------- Auth (PKCE) ---------- */
+function rand(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, b => ("0"+b.toString(16)).slice(-2)).join("") }
+async function challenge(v){
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(v));
+  return btoa(String.fromCharCode(...new Uint8Array(d))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+async function login(){
+  const v = rand(48); store.set("verifier", v);
+  const p = new URLSearchParams({ client_id: store.get("client_id"), response_type:"code", redirect_uri: REDIRECT, scope: SCOPES, code_challenge_method:"S256", code_challenge: await challenge(v) });
+  location.href = "https://accounts.spotify.com/authorize?" + p;
+}
+async function tokenRequest(body){
+  const r = await fetch("https://accounts.spotify.com/api/token", { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded" }, body: new URLSearchParams(body) });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error_description || j.error || "token error");
+  store.set("access", j.access_token);
+  if (j.refresh_token) store.set("refresh", j.refresh_token);
+  store.set("expires", Date.now() + (j.expires_in - 60) * 1000);
+}
+async function handleCallback(){
+  const q = new URLSearchParams(location.search);
+  if (q.get("error")) { history.replaceState(null,"",REDIRECT); alert("เข้าสู่ระบบไม่สำเร็จ: " + q.get("error")); return }
+  if (!q.get("code")) return;
+  await tokenRequest({ grant_type:"authorization_code", code:q.get("code"), redirect_uri:REDIRECT, client_id:store.get("client_id"), code_verifier:store.get("verifier") });
+  history.replaceState(null,"",REDIRECT);
+}
+async function token(){
+  if (!store.get("access")) return null;
+  if (Date.now() > +store.get("expires")) {
+    try { await tokenRequest({ grant_type:"refresh_token", refresh_token:store.get("refresh"), client_id:store.get("client_id") }) }
+    catch { logout(); return null }
+  }
+  return store.get("access");
+}
+function logout(){ ["access","refresh","expires","verifier"].forEach(store.del); location.href = REDIRECT }
+
+async function api(path, opts = {}){
+  const t = await token(); if (!t) throw new Error("no token");
+  const r = await fetch("https://api.spotify.com/v1" + path, { ...opts, headers:{ Authorization:"Bearer " + t, "Content-Type":"application/json", ...(opts.headers||{}) } });
+  if (r.status === 204) return null;
+  const j = await r.json().catch(() => null);
+  if (!r.ok) { const e = new Error(j?.error?.message || r.status); e.status = r.status; throw e }
+  return j;
+}
+
+/* ---------- Screens ---------- */
+function setupScreen(){
+  app.innerHTML = `<div class="center"><h1>🎧 My Music</h1><p>เว็บฟังเพลงจากบัญชี Spotify ของคุณ</p>
+  <div class="setup"><b>ตั้งค่าครั้งแรก</b><ol>
+  <li>เข้า <b>developer.spotify.com</b> แล้วกด <b>Create app</b></li>
+  <li>ช่อง Redirect URI ใส่:<br><code>${esc(REDIRECT)}</code></li>
+  <li>ติ๊ก <b>Web API</b> และ <b>Web Playback SDK</b> แล้วบันทึก</li>
+  <li>ไปที่ <b>User Management</b> เพิ่มอีเมล Spotify ของคุณ</li>
+  <li>คัดลอก <b>Client ID</b> มาวางด้านล่าง</li></ol>
+  <input id="cid" placeholder="วาง Client ID ที่นี่" value="${esc(store.get("client_id")||"")}">
+  <button class="btn" id="save">บันทึกและเข้าสู่ระบบ</button></div></div>`;
+  $("#save").onclick = () => { const v = $("#cid").value.trim(); if (!v) return; store.set("client_id", v); login() };
+}
+function loginScreen(){
+  app.innerHTML = `<div class="center"><h1>🎧 My Music</h1><p>ฟังเพลย์ลิสต์และเพลงที่ถูกใจของคุณได้จากที่นี่<br>(ต้องใช้ Spotify Premium เพื่อเล่นเพลงบนเว็บ)</p>
+  <button class="btn" id="lg">เข้าสู่ระบบด้วย Spotify</button><br><br>
+  <button id="chg" style="color:var(--muted);font-size:13px">เปลี่ยน Client ID</button></div>`;
+  $("#lg").onclick = login;
+  $("#chg").onclick = () => { store.del("client_id"); setupScreen() };
+}
+
+function shell(){
+  app.innerHTML = `<header><img src="${esc(img(me.images))}" alt=""><div><small>สวัสดี</small><h1>${esc(me.display_name || "คุณ")}</h1></div><button class="logout" id="lo">ออกจากระบบ</button></header>
+  <main id="main"></main>
+  <div id="player"><div class="top"><img id="pImg" alt=""><div class="info"><b id="pName">ยังไม่ได้เล่นเพลง</b><span id="pArt">แตะเพลงเพื่อเริ่มเล่น</span></div>
+  <div class="ctrl"><button id="prev">⏮</button><button class="pp" id="pp">▶</button><button id="next">⏭</button></div></div>
+  <div class="bar"><span id="pCur">0:00</span><input type="range" id="seek" min="0" max="100" value="0"><span id="pDur">0:00</span><span>🔊</span><input type="range" class="vol" id="vol" min="0" max="100" value="70"></div></div>
+  <nav>${[["home","🏠","หน้าแรก"],["playlists","📚","เพลย์ลิสต์"],["liked","💚","ที่ถูกใจ"],["search","🔍","ค้นหา"]].map(([k,i,l]) => `<button data-tab="${k}" class="${k===tab?"on":""}"><i>${i}</i>${l}</button>`).join("")}</nav>`;
+  $("#lo").onclick = logout;
+  document.querySelectorAll("nav button").forEach(b => b.onclick = () => go(b.dataset.tab));
+  $("#pp").onclick = () => player ? player.togglePlay() : notice();
+  $("#prev").onclick = () => player?.previousTrack();
+  $("#next").onclick = () => player?.nextTrack();
+  $("#seek").onchange = e => { if (state) player.seek(e.target.value / 100 * state.duration) };
+  $("#vol").oninput = e => player?.setVolume(e.target.value / 100);
+}
+function go(t){ tab = t; document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === t)); render() }
+
+const trackRow = (t, attrs) => `<button class="track" data-uri="${esc(t.uri)}" ${attrs||""}><img src="${esc(img(t.album?.images))}" alt=""><div><b>${esc(t.name)}</b><span>${esc(t.artists?.map(a=>a.name).join(", "))}</span></div></button>`;
+const tile = (cls, imgUrl, title, sub, attrs) => `<button class="${cls}" ${attrs}><img src="${esc(imgUrl)}" alt=""><b>${esc(title)}</b><span>${esc(sub)}</span></button>`;
+
+async function render(){
+  const m = $("#main"); m.innerHTML = `<p class="empty">กำลังโหลด…</p>`;
+  try {
+    if (tab === "home") {
+      const [rec, top] = await Promise.all([api("/me/player/recently-played?limit=20"), api("/me/top/tracks?limit=20&time_range=short_term")]);
+      const seen = new Set(); const recent = rec.items.map(i => i.track).filter(t => !seen.has(t.id) && seen.add(t.id));
+      m.innerHTML = `<h2>เพลงที่ฟังล่าสุด</h2><div class="row">${recent.map(t => tile("tile", img(t.album.images), t.name, t.artists[0]?.name, `data-uri="${esc(t.uri)}"`)).join("") || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>
+      <h2>เพลงที่ฟังบ่อยช่วงนี้</h2><div class="list">${top.items.map(t => trackRow(t)).join("") || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>`;
+      bindPlay(m, [...recent, ...top.items].map(t => t.uri));
+    }
+    if (tab === "playlists") {
+      const pl = await api("/me/playlists?limit=50");
+      m.innerHTML = `<h2>เพลย์ลิสต์ของฉัน</h2><div class="grid">${pl.items.filter(Boolean).map(p => tile("gtile", img(p.images), p.name, (p.tracks?.total ?? p.items?.total ?? "") + " เพลง", `data-pl="${esc(p.id)}" data-name="${esc(p.name)}"`)).join("")}</div>`;
+      m.querySelectorAll("[data-pl]").forEach(b => b.onclick = () => openPlaylist(b.dataset.pl, b.dataset.name));
+    }
+    if (tab === "liked") {
+      const s = await api("/me/tracks?limit=50");
+      const tracks = s.items.map(i => i.track);
+      m.innerHTML = `<h2>เพลงที่ถูกใจ</h2><div class="list">${tracks.map(t => trackRow(t)).join("") || '<p class="empty">ยังไม่มีเพลงที่ถูกใจ</p>'}</div>`;
+      bindPlay(m, tracks.map(t => t.uri));
+    }
+    if (tab === "search") {
+      m.innerHTML = `<input class="search" id="q" placeholder="ค้นหาเพลง ศิลปิน…" autocomplete="off"><div class="list" id="res"></div>`;
+      let timer; $("#q").oninput = e => { clearTimeout(timer); timer = setTimeout(() => doSearch(e.target.value), 400) };
+      $("#q").focus();
+    }
+  } catch (e) { m.innerHTML = `<p class="empty">โหลดไม่สำเร็จ (${esc(e.message)})</p>` }
+  highlight();
+}
+async function openPlaylist(id, name){
+  const m = $("#main"); m.innerHTML = `<p class="empty">กำลังโหลด…</p>`;
+  let d;
+  try { d = await api(`/playlists/${id}/tracks?limit=100`) }
+  catch { d = await api(`/playlists/${id}/items?limit=100`) }
+  const tracks = d.items.map(i => i.track || i.item).filter(t => t && t.uri && t.type === "track");
+  m.innerHTML = `<button class="back" id="bk">‹ กลับ</button><h2>${esc(name)}</h2><div class="list">${tracks.map(t => trackRow(t)).join("") || '<p class="empty">ไม่มีเพลง</p>'}</div>`;
+  $("#bk").onclick = () => render();
+  bindPlay(m, tracks.map(t => t.uri), "spotify:playlist:" + id);
+  highlight();
+}
+async function doSearch(q){
+  const res = $("#res"); if (!q.trim()) { res.innerHTML = ""; return }
+  try {
+    const d = await api("/search?type=track&limit=20&q=" + encodeURIComponent(q));
+    res.innerHTML = d.tracks.items.map(t => trackRow(t)).join("") || '<p class="empty">ไม่พบผลลัพธ์</p>';
+    bindPlay(res, d.tracks.items.map(t => t.uri)); highlight();
+  } catch (e) { res.innerHTML = `<p class="empty">ค้นหาไม่สำเร็จ</p>` }
+}
+function bindPlay(root, uris, context){
+  root.querySelectorAll("[data-uri]").forEach(b => b.onclick = () => play(b.dataset.uri, uris, context));
+}
+async function play(uri, uris, context){
+  if (!deviceId) return notice();
+  const body = context ? { context_uri: context, offset: { uri } } : { uris: [...new Set(uris)].slice(0, 100), offset: { uri } };
+  try { await api(`/me/player/play?device_id=${deviceId}`, { method:"PUT", body: JSON.stringify(body) }) }
+  catch (e) { alert(e.status === 403 ? "ต้องใช้ Spotify Premium เพื่อเล่นเพลงบนเว็บ" : "เล่นไม่สำเร็จ: " + e.message) }
+}
+function notice(){
+  if ($(".notice")) return;
+  $("#main").insertAdjacentHTML("afterbegin", `<div class="notice">ตัวเล่นเพลงบนเว็บยังไม่พร้อม — ต้องใช้ Spotify Premium และเปิดผ่าน Safari/Chrome (ไม่ใช่ในแอปอื่น)</div>`);
+}
+function highlight(){
+  const cur = state?.track_window?.current_track?.uri;
+  document.querySelectorAll(".track").forEach(b => b.classList.toggle("playing", b.dataset.uri === cur));
+}
+
+/* ---------- Web Playback SDK ---------- */
+function initPlayer(){
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    player = new Spotify.Player({ name:"My Music Web Player", getOAuthToken: async cb => cb(await token()), volume:0.7 });
+    player.addListener("ready", ({ device_id }) => { deviceId = device_id });
+    player.addListener("not_ready", () => { deviceId = null });
+    player.addListener("account_error", () => { player = null; notice() });
+    player.addListener("initialization_error", () => { player = null; notice() });
+    player.addListener("authentication_error", () => logout());
+    player.addListener("player_state_changed", s => { state = s; updateBar() });
+    player.connect();
+  };
+  const sc = document.createElement("script"); sc.src = "https://sdk.scdn.co/spotify-player.js"; document.body.appendChild(sc);
+  clearInterval(posTimer);
+  posTimer = setInterval(() => { if (state && !state.paused) { state.position = Math.min(state.position + 1000, state.duration); updateBar(true) } }, 1000);
+}
+function updateBar(onlyPos){
+  if (!state) return;
+  const t = state.track_window.current_track;
+  if (!onlyPos) {
+    $("#pImg").src = t.album.images[0]?.url || "";
+    $("#pName").textContent = t.name;
+    $("#pArt").textContent = t.artists.map(a => a.name).join(", ");
+    $("#pp").textContent = state.paused ? "▶" : "⏸";
+    $("#pDur").textContent = fmt(state.duration);
+    highlight();
+  }
+  $("#pCur").textContent = fmt(state.position);
+  if (document.activeElement !== $("#seek")) $("#seek").value = state.duration ? state.position / state.duration * 100 : 0;
+}
+
+/* ---------- Start ---------- */
+(async () => {
+  if (!store.get("client_id")) return setupScreen();
+  try { await handleCallback() } catch (e) { alert("เข้าสู่ระบบไม่สำเร็จ: " + e.message) }
+  if (!(await token())) return loginScreen();
+  try { me = await api("/me") } catch { return loginScreen() }
+  shell(); render(); initPlayer();
+})();
+</script>
+</body>
+</html>
