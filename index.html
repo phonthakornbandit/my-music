@@ -27,7 +27,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 50% -10%,#2a2218 0%,transparent 70%);background-attachment:fixed;color:var(--text);font-family:var(--sans);font-weight:300;min-height:100vh;padding-bottom:190px;letter-spacing:.01em}
+body{background:var(--bg);background-image:radial-gradient(ellipse 80% 50% at 50% -10%,#2a2218 0%,transparent 70%);background-attachment:fixed;color:var(--text);font-family:var(--sans);font-weight:300;min-height:100vh;padding-bottom:200px;letter-spacing:.01em}
+body.lock{overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 input{font:inherit}
 svg{display:block}
@@ -45,113 +46,203 @@ header .who h1{font-family:var(--serif);font-weight:500;font-size:28px;line-heig
 
 /* Section titles */
 .sec{display:flex;align-items:center;gap:14px;margin:34px 0 18px}
-.sec h2{font-family:var(--thai-serif);font-weight:500;font-size:20px;white-space:nowrap}
+.sec h2{font-family:var(--thai-serif);font-weight:500;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 .sec .orn{color:var(--gold);font-size:12px}
+.sec .side{order:3;font-size:12px;color:var(--muted);white-space:nowrap}
 
-/* Horizontal row of covers — fixed size so every cover matches */
+/* Cover tiles */
 .row{display:flex;gap:18px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;scroll-snap-type:x proximity}
 .row::-webkit-scrollbar{display:none}
-.tile{flex:0 0 150px;width:150px;min-width:0;text-align:left;scroll-snap-align:start}
+.tile{flex:0 0 150px;width:150px;min-width:0;text-align:left;scroll-snap-align:start;cursor:pointer}
 .cover{width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--panel);border:1px solid var(--line);position:relative}
 .cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
 .tile:hover .cover img,.gtile:hover .cover img{transform:scale(1.04)}
-.cover::after{content:"";position:absolute;inset:6px;border:1px solid rgba(227,201,143,.0);transition:border-color .3s}
+.cover::after{content:"";position:absolute;inset:6px;border:1px solid transparent;transition:border-color .3s}
 .tile:hover .cover::after,.gtile:hover .cover::after{border-color:rgba(227,201,143,.55)}
 .tile b,.gtile b{display:block;font-family:var(--thai-serif);font-weight:500;font-size:14px;margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile span,.gtile span{font-size:12px;color:var(--muted);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px}
 .gtile{text-align:left;min-width:0}
+.round .cover,.round .cover::after{border-radius:50%}
+.round{text-align:center}
+.round .rank{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:15px;display:block;margin-top:8px}
+.round b{margin-top:2px}
 
 /* Track list */
 .list{display:flex;flex-direction:column;border-top:1px solid var(--line2)}
-.track{display:grid;grid-template-columns:28px 52px 1fr;align-items:center;gap:14px;padding:11px 6px;text-align:left;width:100%;border-bottom:1px solid var(--line2);transition:background .2s}
+.track{display:grid;grid-template-columns:28px 52px 1fr 36px;align-items:center;gap:14px;padding:11px 0 11px 6px;text-align:left;width:100%;border-bottom:1px solid var(--line2);transition:background .2s;cursor:pointer}
 .track:hover{background:rgba(201,164,92,.06)}
 .track .no{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--faint);text-align:right}
 .track img{width:52px;height:52px;object-fit:cover;background:var(--panel);border:1px solid var(--line)}
-.track div{min-width:0}
+.track .ti{min-width:0}
 .track b{display:block;font-family:var(--thai-serif);font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.track span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:2px}
+.track .ti span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:2px}
 .track.playing b{color:var(--gold2)}
 .track.playing .no{color:var(--gold)}
+.more{width:36px;height:36px;display:grid;place-items:center;color:var(--faint)}
+.more:hover{color:var(--gold2)}
 
 .back{color:var(--gold);margin:26px 0 0;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
 .search{width:100%;padding:14px 4px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--text);margin-top:30px;font-family:var(--thai-serif);font-size:20px;outline:none}
 .search:focus{border-color:var(--gold)}
 .search::placeholder{color:var(--faint)}
 .empty{color:var(--muted);font-size:14px;padding:14px 0;font-style:italic}
+.note{border-left:2px solid var(--gold);padding:10px 14px;color:var(--muted);font-size:13px;line-height:1.7;margin:16px 0;background:rgba(201,164,92,.05)}
+.loadmore{display:block;margin:22px auto 0;color:var(--gold2);font-size:12px;letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid var(--line);padding:6px 2px}
+
+/* Buttons */
+.btn{border:1px solid var(--gold);color:var(--gold2);padding:12px 30px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;transition:all .25s;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn:hover{background:var(--gold);color:var(--bg)}
+.btn.solid{background:var(--gold);color:var(--bg)}
+.btn.solid:hover{background:var(--gold2)}
+.btn.sm{padding:9px 18px;font-size:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.seg{display:inline-flex;border:1px solid var(--line);margin-top:6px}
+.seg button{padding:8px 16px;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--gold);color:var(--bg)}
+
+/* Playlist header */
+.phead{display:flex;gap:22px;align-items:flex-end;margin-top:22px}
+.phead .cover{width:150px;flex:none}
+.phead small{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.phead h2{font-family:var(--thai-serif);font-weight:500;font-size:28px;line-height:1.3;margin:4px 0}
+.phead p{color:var(--muted);font-size:13px}
+@media (max-width:560px){.phead{flex-direction:column;align-items:flex-start}.phead .cover{width:60%;max-width:220px}}
 
 /* Welcome / setup */
 .center{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
 .mark{font-family:var(--serif);font-style:italic;font-size:54px;color:var(--gold2);line-height:1}
 .rule{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:18px auto}
 .center p{color:var(--muted);line-height:1.8;max-width:420px;margin:0 auto 28px}
-.btn{border:1px solid var(--gold);color:var(--gold2);padding:13px 34px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;transition:all .25s}
-.btn:hover{background:var(--gold);color:var(--bg)}
 .link{color:var(--muted);font-size:12px;letter-spacing:.1em;margin-top:18px}
 .setup{background:var(--bg2);border:1px solid var(--line);padding:26px;text-align:left;max-width:460px;width:100%;line-height:1.8;font-size:14px}
 .setup h3{font-family:var(--thai-serif);font-weight:500;font-size:17px;margin-bottom:8px;color:var(--gold2)}
 .setup ol{padding-left:20px;color:var(--muted)}
 .setup ol b{color:var(--text);font-weight:500}
 .setup code{background:var(--panel);padding:2px 6px;word-break:break-all;color:var(--gold2);font-size:12px}
-.setup input{width:100%;padding:12px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--text);margin:18px 0 22px;outline:none}
-.setup input:focus{border-color:var(--gold)}
+.field{width:100%;padding:12px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--text);margin:18px 0 22px;outline:none}
+.field:focus{border-color:var(--gold)}
 .setup .btn{width:100%}
 .notice{border:1px solid #6b5426;color:var(--gold2);padding:12px 14px;font-size:13px;margin-top:20px;background:rgba(201,164,92,.06)}
 
-/* Player */
+/* Player bar */
 #player{position:fixed;left:0;right:0;bottom:64px;background:rgba(22,19,15,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:5}
 #player .wrap{padding-top:12px;padding-bottom:10px}
 #player .top{display:flex;align-items:center;gap:14px}
-#pImg{width:50px;height:50px;object-fit:cover;background:var(--panel);border:1px solid var(--gold);padding:2px}
+#player .meta{display:flex;align-items:center;gap:14px;flex:1;min-width:0;cursor:pointer;text-align:left}
+#pImg{width:50px;height:50px;object-fit:cover;background:var(--panel);border:1px solid var(--gold);padding:2px;flex:none}
 #player .info{flex:1;min-width:0}
 #player .info b{display:block;font-family:var(--thai-serif);font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #player .info span{font-size:12px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctrl{display:flex;gap:6px;align-items:center}
-.ctrl button{width:40px;height:40px;display:grid;place-items:center;color:var(--text);transition:color .2s}
-.ctrl button:hover{color:var(--gold2)}
-.ctrl .pp{width:46px;height:46px;border:1px solid var(--gold);border-radius:50%;color:var(--gold2)}
-.ctrl .pp:hover{background:var(--gold);color:var(--bg)}
+#pDev{color:var(--gold)!important;font-size:11px!important}
+.ctrl{display:flex;gap:4px;align-items:center}
+.ib{width:40px;height:40px;display:grid;place-items:center;color:var(--text);transition:color .2s;position:relative}
+.ib:hover{color:var(--gold2)}
+.ib.dim{color:var(--faint)}
+.ib.on{color:var(--gold2)}
+.ib.on::after{content:"";position:absolute;bottom:5px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:var(--gold)}
+.ib .one{position:absolute;top:6px;right:6px;font-size:9px;font-family:var(--serif);color:var(--gold2)}
+.pp{width:46px;height:46px;border:1px solid var(--gold);border-radius:50%;color:var(--gold2);display:grid;place-items:center;transition:all .2s}
+.pp:hover{background:var(--gold);color:var(--bg)}
 .bar{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:13px;color:var(--muted);margin-top:8px}
 .vwrap{display:flex;align-items:center;gap:8px;color:var(--muted)}
 input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:18px;background:transparent;cursor:pointer}
 input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--line)}
 input[type=range]::-moz-range-track{height:1px;background:var(--line)}
-input[type=range]::-moz-range-progress{height:1px;background:var(--gold)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold2);margin-top:-5px;border:none}
 input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--gold2);border:none}
-#seek{background:linear-gradient(var(--gold),var(--gold)) 0 50%/var(--p,0%) 1px no-repeat}
-.vol{flex:none;width:80px;background:linear-gradient(var(--gold),var(--gold)) 0 50%/var(--p,70%) 1px no-repeat}
+.prog{background:linear-gradient(var(--gold),var(--gold)) 0 50%/var(--p,0%) 1px no-repeat}
+.vol{flex:none;width:80px}
+.hide-sm{display:none}
 
-/* Navigation — bottom bar on phones, inline under header on desktop */
+/* Nav */
 nav{position:fixed;left:0;right:0;bottom:0;height:64px;background:#0d0b09;display:flex;border-top:1px solid var(--line2);padding-bottom:env(safe-area-inset-bottom);z-index:6}
-nav button{flex:1;font-size:11px;letter-spacing:.08em;color:var(--faint);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:color .2s;position:relative}
+nav button{flex:1;font-size:10.5px;letter-spacing:.06em;color:var(--faint);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:color .2s;position:relative}
 nav button.on{color:var(--gold2)}
 nav button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:1px;background:var(--gold)}
 
+/* Now playing overlay */
+#np{position:fixed;inset:0;z-index:20;background:var(--bg);background-image:radial-gradient(ellipse 90% 60% at 50% 0%,#2e251a 0%,transparent 70%);overflow-y:auto;transform:translateY(100%);transition:transform .35s ease;visibility:hidden}
+#np.open{transform:none;visibility:visible}
+.np-in{max-width:1120px;margin:0 auto;padding:18px 22px calc(40px + env(safe-area-inset-bottom))}
+.np-top{display:flex;align-items:center;justify-content:space-between}
+.np-top small{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-align:center}
+.np-main{max-width:440px;margin:0 auto}
+.np-cover{margin:22px auto 0;width:100%;aspect-ratio:1/1;border:1px solid var(--gold);padding:6px;background:var(--panel)}
+.np-cover img{width:100%;height:100%;object-fit:cover;display:block;background:var(--bg2)}
+.np-meta{display:flex;align-items:flex-start;gap:12px;margin-top:24px}
+.np-meta div{flex:1;min-width:0}
+.np-meta h2{font-family:var(--thai-serif);font-weight:500;font-size:24px;line-height:1.35}
+.np-meta p{color:var(--muted);margin-top:4px}
+.np-times{display:flex;justify-content:space-between;font-family:var(--serif);font-size:13px;color:var(--muted);margin-top:2px}
+#npSeek{width:100%;margin-top:18px}
+.np-ctrl{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.np-ctrl .pp{width:64px;height:64px}
+.np-vol{display:flex;align-items:center;gap:10px;color:var(--muted);margin-top:14px}
+.np-tabs{display:flex;gap:26px;margin-top:34px;border-bottom:1px solid var(--line2)}
+.np-tabs button{padding:10px 0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);position:relative}
+.np-tabs button.on{color:var(--gold2)}
+.np-tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--gold)}
+#npPanel{border-top:none}
+.dev{display:flex;align-items:center;gap:14px;padding:14px 6px;border-bottom:1px solid var(--line2);width:100%;text-align:left}
+.dev:hover{background:rgba(201,164,92,.06)}
+.dev b{font-family:var(--thai-serif);font-weight:500;display:block}
+.dev span{font-size:12px;color:var(--muted)}
+.dev.active b,.dev.active svg{color:var(--gold2)}
+@media (min-width:900px){
+  .np-grid{display:grid;grid-template-columns:440px 1fr;gap:60px;margin-top:10px}
+  .np-main{margin:0}
+  .np-tabs{margin-top:22px}
+}
+
+/* Sheet & toast */
+#sheet{position:fixed;inset:0;z-index:30;display:none}
+#sheet.open{display:block}
+#sheet .bd{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+#sheet .sh{position:absolute;left:0;right:0;bottom:0;max-height:80vh;overflow-y:auto;background:var(--bg2);border-top:1px solid var(--gold);padding:18px 20px calc(24px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sh-head{display:flex;gap:14px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line2);margin-bottom:6px}
+.sh-head img{width:54px;height:54px;object-fit:cover;border:1px solid var(--line);background:var(--panel)}
+.sh-head div{min-width:0}
+.sh-head b{font-family:var(--thai-serif);font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-head span{font-size:12px;color:var(--muted)}
+.sh-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 4px;text-align:left;border-bottom:1px solid var(--line2);font-size:15px}
+.sh-btn:hover{color:var(--gold2)}
+.sh-btn svg{color:var(--gold)}
+.sh-btn small{margin-left:auto;color:var(--faint);font-size:12px}
+.sh-title{font-family:var(--thai-serif);font-weight:500;font-size:17px;color:var(--gold2);margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:150px;transform:translateX(-50%) translateY(20px);background:var(--panel);border:1px solid var(--gold);color:var(--gold2);padding:10px 18px;font-size:13px;z-index:40;opacity:0;pointer-events:none;transition:all .3s;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
 @media (min-width:860px){
-  body{padding-bottom:130px}
-  nav{position:static;height:auto;background:none;border:none;justify-content:flex-start;gap:34px;padding:14px 0 0;max-width:1120px;margin:0 auto;padding-left:20px}
+  body{padding-bottom:140px}
+  nav{position:static;height:auto;background:none;border:none;justify-content:flex-start;gap:34px;padding:14px 0 0 20px;max-width:1120px;margin:0 auto}
   nav button{flex:none;flex-direction:row;gap:8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:8px 0}
   nav button.on::before{top:auto;bottom:0;left:0;right:0}
   #player{bottom:0}
   #player .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding-top:14px;padding-bottom:14px}
   #player .top{display:contents}
-  #player .meta{display:flex;align-items:center;gap:14px;min-width:0}
   .ctrl{justify-self:center}
   .bar{grid-column:1/-1;margin-top:0;order:3}
+  .hide-sm{display:grid}
   .tile{flex-basis:170px;width:170px}
   .sec h2{font-size:22px}
+  #toast{bottom:120px}
 }
-@media (max-width:859px){ #player .meta{display:flex;align-items:center;gap:14px;flex:1;min-width:0} }
 </style>
 </head>
 <body>
 <div id="app"></div>
+<div id="sheet"><div class="bd"></div><div class="sh" id="shBody"></div></div>
+<div id="toast"></div>
 
 <script>
-const SCOPES = "user-read-private user-read-email playlist-read-private user-library-read user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state";
+/* =========================================================
+   My Music — personal Spotify player (Web API, 2026 Dev Mode)
+   ========================================================= */
+const SCOPES = "user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public user-library-read user-library-modify user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state user-read-currently-playing";
+const SCOPE_VER = "2";
 const REDIRECT = location.origin + location.pathname;
 const $ = s => document.querySelector(s);
 const app = $("#app");
@@ -160,24 +251,40 @@ const store = {
   set: (k,v) => { try { localStorage.setItem(k,v) } catch {} },
   del: k => { try { localStorage.removeItem(k) } catch {} }
 };
-const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const img = (images) => images?.[images.length > 1 ? 1 : 0]?.url || "";
-const fmt = ms => { const s = Math.floor(ms/1000); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0") };
+const bigImg = (images) => images?.[0]?.url || "";
+const fmt = ms => { ms = Math.max(0, ms||0); const s = Math.floor(ms/1000); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0") };
+const artistsOf = t => (t.artists||[]).map(a => a.name).join(", ");
 
-/* Thin line icons */
+const svg = (d, fill) => `<svg width="20" height="20" viewBox="0 0 24 24" ${fill ? 'fill="currentColor"' : 'fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"'}>${d}</svg>`;
 const I = {
-  home:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>',
-  lib:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 4v16M9 4v16M14 4l6 16"/></svg>',
-  heart:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg>',
-  search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
-  prev:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h1.5v14H6zM19 5v14L9 12z"/></svg>',
-  next:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 5H18v14h-1.5zM5 5v14l10-7z"/></svg>',
-  play:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>',
-  pause:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>',
-  vol:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>'
+  home: svg('<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>'),
+  lib: svg('<path d="M4 4v16M9 4v16M14 4l6 16"/>'),
+  heart: svg('<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>'),
+  heartF: svg('<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>', true),
+  stats: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  search: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'),
+  prev: svg('<path d="M6 5h1.5v14H6zM19 5v14L9 12z"/>', true),
+  next: svg('<path d="M16.5 5H18v14h-1.5zM5 5v14l10-7z"/>', true),
+  play: svg('<path d="M7 4v16l13-8z"/>', true),
+  pause: svg('<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>', true),
+  vol: svg('<path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>'),
+  shuffle: svg('<path d="M3 6h3.5c2 0 3.3 1 4.4 2.6l2.2 3.3c1.1 1.6 2.4 2.6 4.4 2.6H21M17 11.5l4 3-4 3M3 18h3.5c1.3 0 2.3-.4 3.1-1.1M14.4 7.1c.8-.7 1.8-1.1 3.1-1.1H21M17 3l4 3-4 3"/>'),
+  repeat: svg('<path d="M4 11V9a3 3 0 0 1 3-3h13M17 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H4M7 21l-3-3 3-3"/>'),
+  more: svg('<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>', true),
+  queue: svg('<path d="M3 6h13M3 12h13M3 18h8M18 15v6M15 18h6"/>'),
+  plus: svg('<path d="M12 5v14M5 12h14"/>'),
+  down: svg('<path d="m6 9 6 6 6-6"/>'),
+  device: svg('<rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/>'),
+  phone: svg('<rect x="7" y="2.5" width="10" height="19" rx="1.5"/><path d="M11 18.5h2"/>'),
+  speaker: svg('<rect x="5" y="2.5" width="14" height="19" rx="1.5"/><circle cx="12" cy="14" r="3.5"/><circle cx="12" cy="7" r="1"/>'),
+  check: svg('<path d="m5 12 5 5 9-10"/>')
 };
 
-let deviceId = null, player = null, me = null, tab = "home", state = null, posTimer = null;
+let deviceId = null, player = null, me = null, tab = "home", cur = null, liked = null, statsRange = "short_term";
+const trackCache = {}, plCache = {};
+let myPlaylists = null;
 
 /* ---------- Auth (PKCE) ---------- */
 function rand(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, b => ("0"+b.toString(16)).slice(-2)).join("") }
@@ -203,13 +310,15 @@ async function handleCallback(){
   if (q.get("error")) { history.replaceState(null,"",REDIRECT); alert("เข้าสู่ระบบไม่สำเร็จ: " + q.get("error")); return }
   if (!q.get("code")) return;
   await tokenRequest({ grant_type:"authorization_code", code:q.get("code"), redirect_uri:REDIRECT, client_id:store.get("client_id"), code_verifier:store.get("verifier") });
+  store.set("scope_ver", SCOPE_VER);
   history.replaceState(null,"",REDIRECT);
 }
+let refreshing = null;
 async function token(){
   if (!store.get("access")) return null;
   if (Date.now() > +store.get("expires")) {
-    try { await tokenRequest({ grant_type:"refresh_token", refresh_token:store.get("refresh"), client_id:store.get("client_id") }) }
-    catch { logout(); return null }
+    refreshing ||= tokenRequest({ grant_type:"refresh_token", refresh_token:store.get("refresh"), client_id:store.get("client_id") }).finally(() => refreshing = null);
+    try { await refreshing } catch { logout(); return null }
   }
   return store.get("access");
 }
@@ -218,10 +327,110 @@ function logout(){ ["access","refresh","expires","verifier"].forEach(store.del);
 async function api(path, opts = {}){
   const t = await token(); if (!t) throw new Error("no token");
   const r = await fetch("https://api.spotify.com/v1" + path, { ...opts, headers:{ Authorization:"Bearer " + t, "Content-Type":"application/json", ...(opts.headers||{}) } });
-  if (r.status === 204) return null;
-  const j = await r.json().catch(() => null);
-  if (!r.ok) { const e = new Error(j?.error?.message || r.status); e.status = r.status; throw e }
+  if (r.status === 204 || r.status === 202) return null;
+  const txt = await r.text(); let j = null; try { j = txt ? JSON.parse(txt) : null } catch {}
+  if (!r.ok) { const e = new Error(j?.error?.message || ("HTTP " + r.status)); e.status = r.status; throw e }
   return j;
+}
+/* Try newer 2026 endpoints first, fall back to older ones */
+async function apiTry(list){
+  let err;
+  for (const [p, o] of list) {
+    try { return await api(p, o) }
+    catch (e) { err = e; if (![400,404,405,410].includes(e.status)) throw e }
+  }
+  throw err;
+}
+
+/* ---------- Library helpers ---------- */
+const enc = encodeURIComponent;
+async function isSaved(uris){
+  const ids = uris.map(u => u.split(":").pop());
+  return apiTry([[`/me/library/contains?uris=${enc(uris.join(","))}`], [`/me/tracks/contains?ids=${ids.join(",")}`]]);
+}
+async function setSaved(uri, on){
+  const method = on ? "PUT" : "DELETE";
+  return apiTry([[`/me/library?uris=${enc(uri)}`, {method}], [`/me/tracks?ids=${uri.split(":").pop()}`, {method}]]);
+}
+async function getMyPlaylists(force){
+  if (myPlaylists && !force) return myPlaylists;
+  const out = []; let url = "/me/playlists?limit=50";
+  for (let i = 0; i < 4 && url; i++) {
+    const d = await api(url);
+    (d.items||[]).filter(Boolean).forEach(p => { out.push(p); plCache[p.id] = p });
+    url = d.next ? d.next.replace("https://api.spotify.com/v1", "") : null;
+  }
+  return myPlaylists = out;
+}
+const ownsPl = p => p.owner?.id === me.id || p.collaborative;
+const plTotal = p => p.tracks?.total ?? p.items?.total ?? "";
+async function createPlaylist(name){
+  const body = JSON.stringify({ name, public:false, description:"สร้างจาก My Music" });
+  const p = await apiTry([["/me/playlists", {method:"POST", body}], [`/users/${me.id}/playlists`, {method:"POST", body}]]);
+  myPlaylists = null; return p;
+}
+async function addToPlaylist(id, uris){
+  const body = JSON.stringify({ uris });
+  return apiTry([[`/playlists/${id}/items`, {method:"POST", body}], [`/playlists/${id}/tracks`, {method:"POST", body}]]);
+}
+
+/* ---------- UI helpers ---------- */
+let toastT;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400) }
+function sheet(html, onAction){
+  const s = $("#sheet"); $("#shBody").innerHTML = html; s.classList.add("open");
+  s.querySelector(".bd").onclick = closeSheet;
+  $("#shBody").querySelectorAll("[data-a]").forEach(b => b.onclick = () => onAction(b.dataset.a, b));
+}
+function closeSheet(){ $("#sheet").classList.remove("open") }
+const sec = (t, side) => `<div class="sec"><span class="orn">◆</span><h2>${t}</h2>${side ? `<span class="side">${side}</span>` : ""}</div>`;
+function remember(t){ if (t?.uri) trackCache[t.uri] = { uri:t.uri, id:t.id, name:t.name, artists:artistsOf(t), img:img(t.album?.images) }; return t }
+const trackRow = (t, n) => { remember(t); return `<div class="track" role="button" tabindex="0" data-uri="${esc(t.uri)}"><span class="no">${n}</span><img src="${esc(img(t.album?.images))}" alt="" loading="lazy"><div class="ti"><b>${esc(t.name)}</b><span>${esc(artistsOf(t))}</span></div><button class="more" data-more="${esc(t.uri)}" aria-label="ตัวเลือก">${I.more}</button></div>` };
+const trackList = (list, start = 0) => list.map((t,i) => trackRow(t, start + i + 1)).join("");
+const tile = (cls, imgUrl, title, sub, attrs) => `<div class="${cls}" role="button" tabindex="0" ${attrs}><div class="cover"><img src="${esc(imgUrl)}" alt="" loading="lazy"></div><b>${esc(title)}</b><span>${esc(sub)}</span></div>`;
+function bindTracks(root, uris, context){
+  root.querySelectorAll(".track[data-uri], .tile[data-uri]").forEach(el => el.onclick = e => { if (e.target.closest(".more")) return; play(el.dataset.uri, uris, context) });
+  root.querySelectorAll(".more").forEach(b => b.onclick = e => { e.stopPropagation(); trackMenu(b.dataset.more) });
+}
+function greeting(){ const h = new Date().getHours(); return h < 12 ? "อรุณสวัสดิ์" : h < 17 ? "สวัสดียามบ่าย" : "สวัสดียามค่ำ" }
+
+/* ---------- Track menu ---------- */
+async function trackMenu(uri){
+  const t = trackCache[uri]; if (!t) return;
+  let saved = null;
+  try { saved = (await isSaved([uri]))?.[0] } catch {}
+  sheet(`<div class="sh-head"><img src="${esc(t.img)}" alt=""><div><b>${esc(t.name)}</b><span>${esc(t.artists)}</span></div></div>
+    <button class="sh-btn" data-a="like">${saved ? I.heartF + " เอาออกจากเพลงที่ถูกใจ" : I.heart + " เพิ่มในเพลงที่ถูกใจ"}</button>
+    <button class="sh-btn" data-a="queue">${I.queue} เล่นต่อจากเพลงนี้ (เพิ่มในคิว)</button>
+    <button class="sh-btn" data-a="pl">${I.plus} เพิ่มลงเพลย์ลิสต์</button>`, async a => {
+      if (a === "like") { try { await setSaved(uri, !saved); toast(saved ? "เอาออกจากเพลงที่ถูกใจแล้ว" : "เพิ่มในเพลงที่ถูกใจแล้ว"); if (cur?.uri === uri) setLiked(!saved); if (tab === "liked" && saved) render() } catch (e) { toast("ทำไม่สำเร็จ: " + e.message) } closeSheet() }
+      if (a === "queue") { try { await api(`/me/player/queue?uri=${enc(uri)}`, {method:"POST"}); toast("เพิ่มในคิวแล้ว") } catch (e) { toast(e.status === 404 ? "ยังไม่มีอุปกรณ์ที่กำลังเล่นอยู่" : "เพิ่มในคิวไม่สำเร็จ") } closeSheet() }
+      if (a === "pl") pickPlaylist([uri]);
+    });
+}
+async function pickPlaylist(uris){
+  sheet(`<div class="sh-title">เพิ่มลงเพลย์ลิสต์</div><p class="empty">กำลังโหลด…</p>`, () => {});
+  let list = [];
+  try { list = (await getMyPlaylists()).filter(ownsPl) } catch {}
+  sheet(`<div class="sh-title">เพิ่มลงเพลย์ลิสต์</div>
+    <button class="sh-btn" data-a="new">${I.plus} สร้างเพลย์ลิสต์ใหม่</button>
+    ${list.map(p => `<button class="sh-btn" data-a="add" data-id="${esc(p.id)}">${I.lib} <span>${esc(p.name)}</span><small>${plTotal(p)} เพลง</small></button>`).join("") || '<p class="empty">ยังไม่มีเพลย์ลิสต์ที่คุณสร้าง</p>'}`, async (a, b) => {
+      if (a === "new") return newPlaylistSheet(uris);
+      try { await addToPlaylist(b.dataset.id, uris); toast("เพิ่มลง " + (plCache[b.dataset.id]?.name || "เพลย์ลิสต์") + " แล้ว"); myPlaylists = null } catch (e) { toast("เพิ่มไม่สำเร็จ: " + e.message) }
+      closeSheet();
+    });
+}
+function newPlaylistSheet(uris){
+  sheet(`<div class="sh-title">สร้างเพลย์ลิสต์ใหม่</div><input class="field" id="plName" placeholder="ชื่อเพลย์ลิสต์" maxlength="100"><button class="btn solid" style="width:100%" data-a="create">สร้าง</button>`, async () => {
+    const name = $("#plName").value.trim(); if (!name) return $("#plName").focus();
+    try {
+      const p = await createPlaylist(name); plCache[p.id] = p;
+      if (uris?.length) await addToPlaylist(p.id, uris);
+      toast("สร้าง “" + name + "” แล้ว"); closeSheet();
+      if (tab === "playlists") render();
+    } catch (e) { toast("สร้างไม่สำเร็จ: " + e.message) }
+  });
+  setTimeout(() => $("#plName")?.focus(), 50);
 }
 
 /* ---------- Screens ---------- */
@@ -233,150 +442,344 @@ function setupScreen(){
   <li>เลือก <b>Web API</b> และ <b>Web Playback SDK</b></li>
   <li>เพิ่มอีเมลของคุณใน <b>User Management</b></li>
   <li>คัดลอก <b>Client ID</b> มาวางด้านล่าง</li></ol>
-  <input id="cid" placeholder="Client ID" value="${esc(store.get("client_id")||"")}">
+  <input class="field" id="cid" placeholder="Client ID" value="${esc(store.get("client_id")||"")}">
   <button class="btn" id="save">บันทึกและเข้าสู่ระบบ</button></div></div>`;
   $("#save").onclick = () => { const v = $("#cid").value.trim(); if (!v) return; store.set("client_id", v); login() };
 }
-function loginScreen(){
+function loginScreen(msg){
   app.innerHTML = `<div class="center"><div class="mark">My Music</div><div class="rule"></div>
-  <p>เพลย์ลิสต์ เพลงที่ถูกใจ และเพลงที่คุณฟังบ่อย รวมไว้ในที่เดียว<br><small style="color:var(--faint)">ต้องใช้ Spotify Premium เพื่อเล่นเพลงบนเว็บ</small></p>
+  <p>${msg ? `<span style="color:var(--gold2)">${esc(msg)}</span><br>` : "เพลย์ลิสต์ เพลงที่ถูกใจ และเพลงที่คุณฟังบ่อย รวมไว้ในที่เดียว<br>"}<small style="color:var(--faint)">ต้องใช้ Spotify Premium เพื่อเล่นเพลงบนเว็บ</small></p>
   <button class="btn" id="lg">เข้าสู่ระบบด้วย Spotify</button>
   <button class="link" id="chg">เปลี่ยน Client ID</button></div>`;
   $("#lg").onclick = login;
   $("#chg").onclick = () => { store.del("client_id"); setupScreen() };
 }
 
-function greeting(){
-  const h = new Date().getHours();
-  return h < 12 ? "อรุณสวัสดิ์" : h < 17 ? "สวัสดียามบ่าย" : "สวัสดียามค่ำ";
-}
-
+const TABS = [["home",I.home,"หน้าแรก"],["playlists",I.lib,"เพลย์ลิสต์"],["liked",I.heart,"ที่ถูกใจ"],["stats",I.stats,"สถิติ"],["search",I.search,"ค้นหา"]];
 function shell(){
   app.innerHTML = `<div class="wrap"><header><img class="avatar" src="${esc(img(me.images))}" alt=""><div class="who"><small>${greeting()}</small><h1>${esc(me.display_name || "คุณ")}</h1></div>
   <div class="brand"><b>My Music</b><button class="logout" id="lo">ออกจากระบบ</button></div></header></div>
-  <nav>${[["home",I.home,"หน้าแรก"],["playlists",I.lib,"เพลย์ลิสต์"],["liked",I.heart,"ที่ถูกใจ"],["search",I.search,"ค้นหา"]].map(([k,i,l]) => `<button data-tab="${k}" class="${k===tab?"on":""}">${i}<span>${l}</span></button>`).join("")}</nav>
+  <nav>${TABS.map(([k,i,l]) => `<button data-tab="${k}" class="${k===tab?"on":""}">${i}<span>${l}</span></button>`).join("")}</nav>
   <main class="wrap" id="main"></main>
-  <div id="player"><div class="wrap"><div class="top"><div class="meta"><img id="pImg" alt=""><div class="info"><b id="pName">ยังไม่ได้เล่นเพลง</b><span id="pArt">แตะเพลงเพื่อเริ่มเล่น</span></div></div>
-  <div class="ctrl"><button id="prev" aria-label="ก่อนหน้า">${I.prev}</button><button class="pp" id="pp" aria-label="เล่น">${I.play}</button><button id="next" aria-label="ถัดไป">${I.next}</button></div></div>
-  <div class="bar"><span id="pCur">0:00</span><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><span id="pDur">0:00</span><span class="vwrap">${I.vol}<input type="range" class="vol" id="vol" min="0" max="100" value="70"></span></div></div></div>`;
+  <div id="player"><div class="wrap"><div class="top"><button class="meta" id="openNp"><img id="pImg" alt=""><div class="info"><b id="pName">ยังไม่ได้เล่นเพลง</b><span id="pArt">แตะเพลงเพื่อเริ่มเล่น</span><span id="pDev"></span></div></button>
+  <div class="ctrl"><button class="ib dim hide-sm" id="shuf" aria-label="สุ่ม">${I.shuffle}</button><button class="ib" id="prev" aria-label="ก่อนหน้า">${I.prev}</button><button class="pp" id="pp" aria-label="เล่น">${I.play}</button><button class="ib" id="next" aria-label="ถัดไป">${I.next}</button><button class="ib dim hide-sm" id="rep" aria-label="เล่นซ้ำ">${I.repeat}</button></div></div>
+  <div class="bar"><span id="pCur">0:00</span><input type="range" class="prog" id="seek" min="0" max="1000" value="0"><span id="pDur">0:00</span><span class="vwrap">${I.vol}<input type="range" class="vol prog" id="vol" min="0" max="100" value="70" style="--p:70%"></span></div></div></div>
+  <div id="np"><div class="np-in">
+    <div class="np-top"><button class="ib" id="npClose" aria-label="ปิด">${I.down}</button><small>กำลังเล่น<br><span id="npDev" style="color:var(--muted);letter-spacing:.1em;text-transform:none"></span></small><button class="ib" id="npMore" aria-label="ตัวเลือก">${I.more}</button></div>
+    <div class="np-grid"><div class="np-main">
+      <div class="np-cover"><img id="npImg" alt=""></div>
+      <div class="np-meta"><div><h2 id="npName">ยังไม่ได้เล่นเพลง</h2><p id="npArt"></p></div><button class="ib" id="npLike" aria-label="ถูกใจ">${I.heart}</button></div>
+      <input type="range" class="prog" id="npSeek" min="0" max="1000" value="0"><div class="np-times"><span id="npCur">0:00</span><span id="npDur">0:00</span></div>
+      <div class="np-ctrl"><button class="ib dim" id="npShuf">${I.shuffle}</button><button class="ib" id="npPrev">${I.prev}</button><button class="pp" id="npPP">${I.play}</button><button class="ib" id="npNext">${I.next}</button><button class="ib dim" id="npRep">${I.repeat}</button></div>
+      <div class="np-vol">${I.vol}<input type="range" class="prog" id="npVol" min="0" max="100" value="70" style="--p:70%"></div>
+    </div><div>
+      <div class="np-tabs"><button data-np="queue" class="on">คิวถัดไป</button><button data-np="devices">อุปกรณ์</button></div>
+      <div id="npPanel" class="list"></div>
+    </div></div>
+  </div></div>`;
   $("#lo").onclick = logout;
   document.querySelectorAll("nav button").forEach(b => b.onclick = () => go(b.dataset.tab));
-  $("#pp").onclick = () => player ? player.togglePlay() : notice();
-  $("#prev").onclick = () => player?.previousTrack();
-  $("#next").onclick = () => player?.nextTrack();
-  $("#seek").oninput = e => e.target.style.setProperty("--p", e.target.value + "%");
-  $("#seek").onchange = e => { if (state) player.seek(e.target.value / 100 * state.duration) };
-  $("#vol").oninput = e => { e.target.style.setProperty("--p", e.target.value + "%"); player?.setVolume(e.target.value / 100) };
+  $("#openNp").onclick = openNp;
+  $("#npClose").onclick = closeNp;
+  $("#npMore").onclick = () => cur && trackMenu(cur.uri);
+  $("#npLike").onclick = toggleLike;
+  for (const [a, b, act] of [["pp","npPP","toggle"],["prev","npPrev","prev"],["next","npNext","next"],["shuf","npShuf","shuffle"],["rep","npRep","repeat"]]) { $("#"+a).onclick = () => ctl(act); $("#"+b).onclick = () => ctl(act) }
+  for (const id of ["seek","npSeek"]) {
+    const s = $("#"+id);
+    s.oninput = () => { s.style.setProperty("--p", s.value/10 + "%"); s.dataset.drag = "1" };
+    s.onchange = () => { delete s.dataset.drag; if (cur) { const pos = s.value/1000 * cur.duration; cur.position = pos; ctl("seek", pos) } };
+  }
+  for (const id of ["vol","npVol"]) {
+    const v = $("#"+id); let t;
+    v.oninput = () => { for (const o of ["vol","npVol"]) { $("#"+o).value = v.value; $("#"+o).style.setProperty("--p", v.value + "%") } clearTimeout(t); t = setTimeout(() => ctl("vol", +v.value), 150) };
+  }
+  document.querySelectorAll("[data-np]").forEach(b => b.onclick = () => { document.querySelectorAll("[data-np]").forEach(x => x.classList.toggle("on", x === b)); loadNpPanel() });
+  document.addEventListener("keydown", e => {
+    if (e.target.matches("input,textarea")) return;
+    if (e.code === "Space") { e.preventDefault(); ctl("toggle") }
+    if (e.key === "Escape") { closeSheet(); closeNp() }
+  });
 }
 function go(t){ tab = t; document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === t)); render(); window.scrollTo({top:0,behavior:"smooth"}) }
 
-const sec = t => `<div class="sec"><span class="orn">◆</span><h2>${t}</h2></div>`;
-const trackRow = (t, n) => `<button class="track" data-uri="${esc(t.uri)}"><span class="no">${n}</span><img src="${esc(img(t.album?.images))}" alt="" loading="lazy"><div><b>${esc(t.name)}</b><span>${esc(t.artists?.map(a=>a.name).join(", "))}</span></div></button>`;
-const tracks = list => list.map((t,i) => trackRow(t, i+1)).join("");
-const tile = (cls, imgUrl, title, sub, attrs) => `<button class="${cls}" ${attrs}><div class="cover"><img src="${esc(imgUrl)}" alt="" loading="lazy"></div><b>${esc(title)}</b><span>${esc(sub)}</span></button>`;
-
+/* ---------- Pages ---------- */
 async function render(){
   const m = $("#main"); m.innerHTML = `<p class="empty">กำลังโหลด…</p>`;
   try {
     if (tab === "home") {
-      const [rec, top] = await Promise.all([api("/me/player/recently-played?limit=20"), api("/me/top/tracks?limit=20&time_range=short_term")]);
-      const seen = new Set(); const recent = rec.items.map(i => i.track).filter(t => !seen.has(t.id) && seen.add(t.id));
-      m.innerHTML = `${sec("เพลงที่ฟังล่าสุด")}<div class="row">${recent.map(t => tile("tile", img(t.album.images), t.name, t.artists[0]?.name, `data-uri="${esc(t.uri)}"`)).join("") || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>
-      ${sec("เพลงที่ฟังบ่อยช่วงนี้")}<div class="list">${tracks(top.items) || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>`;
-      bindPlay(m, [...recent, ...top.items].map(t => t.uri));
+      const [rec, top] = await Promise.all([api("/me/player/recently-played?limit=30"), api("/me/top/tracks?limit=10&time_range=short_term")]);
+      const seen = new Set(); const recent = rec.items.map(i => i.track).filter(t => t && !seen.has(t.id) && seen.add(t.id));
+      recent.forEach(remember);
+      m.innerHTML = `${sec("เพลงที่ฟังล่าสุด")}<div class="row">${recent.map(t => tile("tile", img(t.album?.images), t.name, t.artists?.[0]?.name, `data-uri="${esc(t.uri)}"`)).join("") || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>
+      ${sec("เพลงที่ฟังบ่อยช่วงนี้", `<button class="loadmore" style="margin:0" id="toStats">ดูสถิติทั้งหมด</button>`)}<div class="list">${trackList(top.items) || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>`;
+      bindTracks(m, [...recent, ...top.items].map(t => t.uri));
+      $("#toStats").onclick = () => go("stats");
     }
     if (tab === "playlists") {
-      const pl = await api("/me/playlists?limit=50");
-      m.innerHTML = `${sec("เพลย์ลิสต์ของฉัน")}<div class="grid">${pl.items.filter(Boolean).map(p => tile("gtile", img(p.images), p.name, (p.tracks?.total ?? p.items?.total ?? "") + " เพลง", `data-pl="${esc(p.id)}" data-name="${esc(p.name)}"`)).join("")}</div>`;
-      m.querySelectorAll("[data-pl]").forEach(b => b.onclick = () => openPlaylist(b.dataset.pl, b.dataset.name));
+      const pl = await getMyPlaylists(true);
+      m.innerHTML = `${sec("เพลย์ลิสต์ของฉัน", pl.length + " รายการ")}<div class="actions" style="margin:-4px 0 22px"><button class="btn sm" id="newPl">${I.plus} สร้างเพลย์ลิสต์</button></div>
+      <div class="grid">${pl.map(p => tile("gtile", img(p.images), p.name, `${plTotal(p)} เพลง · ${p.owner?.id === me.id ? "ของฉัน" : "โดย " + (p.owner?.display_name || "ผู้อื่น")}`, `data-pl="${esc(p.id)}"`)).join("") || '<p class="empty">ยังไม่มีเพลย์ลิสต์</p>'}</div>`;
+      $("#newPl").onclick = () => newPlaylistSheet();
+      m.querySelectorAll("[data-pl]").forEach(b => b.onclick = () => openPlaylist(b.dataset.pl));
     }
-    if (tab === "liked") {
-      const s = await api("/me/tracks?limit=50");
-      const list = s.items.map(i => i.track);
-      m.innerHTML = `${sec("เพลงที่ถูกใจ")}<div class="list">${tracks(list) || '<p class="empty">ยังไม่มีเพลงที่ถูกใจ</p>'}</div>`;
-      bindPlay(m, list.map(t => t.uri));
-    }
-    if (tab === "search") {
-      m.innerHTML = `<input class="search" id="q" placeholder="ค้นหาเพลง หรือศิลปิน…" autocomplete="off"><div class="list" id="res" style="border-top:none;margin-top:10px"></div>`;
-      let timer; $("#q").oninput = e => { clearTimeout(timer); timer = setTimeout(() => doSearch(e.target.value), 400) };
-      $("#q").focus();
-    }
+    if (tab === "liked") await renderLiked(m);
+    if (tab === "stats") await renderStats(m);
+    if (tab === "search") renderSearch(m);
   } catch (e) { m.innerHTML = `<p class="empty">โหลดไม่สำเร็จ (${esc(e.message)})</p>` }
   highlight();
 }
-async function openPlaylist(id, name){
-  const m = $("#main"); m.innerHTML = `<p class="empty">กำลังโหลด…</p>`;
-  let d;
-  try { d = await api(`/playlists/${id}/tracks?limit=100`) }
-  catch { d = await api(`/playlists/${id}/items?limit=100`) }
-  const list = d.items.map(i => i.track || i.item).filter(t => t && t.uri && t.type === "track");
-  m.innerHTML = `<button class="back" id="bk">‹ เพลย์ลิสต์ทั้งหมด</button>${sec(esc(name))}<div class="list">${tracks(list) || '<p class="empty">ไม่มีเพลง</p>'}</div>`;
-  $("#bk").onclick = () => render();
-  bindPlay(m, list.map(t => t.uri), "spotify:playlist:" + id);
-  highlight();
-}
-async function doSearch(q){
-  const res = $("#res"); if (!q.trim()) { res.innerHTML = ""; return }
-  try {
-    const d = await api("/search?type=track&limit=20&q=" + encodeURIComponent(q));
-    res.innerHTML = tracks(d.tracks.items) || '<p class="empty">ไม่พบผลลัพธ์</p>';
-    bindPlay(res, d.tracks.items.map(t => t.uri)); highlight();
-  } catch (e) { res.innerHTML = `<p class="empty">ค้นหาไม่สำเร็จ</p>` }
-}
-function bindPlay(root, uris, context){
-  root.querySelectorAll("[data-uri]").forEach(b => b.onclick = () => play(b.dataset.uri, uris, context));
-}
-async function play(uri, uris, context){
-  if (!deviceId) return notice();
-  const body = context ? { context_uri: context, offset: { uri } } : { uris: [...new Set(uris)].slice(0, 100), offset: { uri } };
-  try { await api(`/me/player/play?device_id=${deviceId}`, { method:"PUT", body: JSON.stringify(body) }) }
-  catch (e) { alert(e.status === 403 ? "ต้องใช้ Spotify Premium เพื่อเล่นเพลงบนเว็บ" : "เล่นไม่สำเร็จ: " + e.message) }
-}
-function notice(){
-  if ($(".notice")) return;
-  $("#main").insertAdjacentHTML("afterbegin", `<div class="notice">ตัวเล่นเพลงบนเว็บยังไม่พร้อม — ต้องใช้ Spotify Premium และเปิดผ่าน Safari หรือ Chrome</div>`);
-}
-function highlight(){
-  const cur = state?.track_window?.current_track?.uri;
-  document.querySelectorAll(".track").forEach(b => b.classList.toggle("playing", b.dataset.uri === cur));
+
+async function renderLiked(m){
+  let items = [], next = "/me/tracks?limit=50", total = 0;
+  const draw = () => {
+    m.innerHTML = `${sec("เพลงที่ถูกใจ", total ? total + " เพลง" : "")}
+      ${items.length ? `<div class="actions" style="margin:-4px 0 22px"><button class="btn sm solid" id="lkPlay">${I.play} เล่นทั้งหมด</button><button class="btn sm" id="lkShuf">${I.shuffle} สุ่มเล่น</button></div>` : ""}
+      <div class="list">${trackList(items) || '<p class="empty">ยังไม่มีเพลงที่ถูกใจ</p>'}</div>${next ? '<button class="loadmore" id="lm">โหลดเพิ่ม</button>' : ""}`;
+    const uris = items.map(t => t.uri);
+    bindTracks(m, uris);
+    if (items.length) { $("#lkPlay").onclick = () => play(uris[0], uris); $("#lkShuf").onclick = () => playShuffled(uris) }
+    if (next) $("#lm").onclick = load;
+    highlight();
+  };
+  const load = async () => {
+    const d = await api(next); total = d.total || total;
+    items = items.concat(d.items.map(i => i.track).filter(Boolean));
+    next = d.next ? d.next.replace("https://api.spotify.com/v1", "") : null; draw();
+  };
+  await load();
 }
 
-/* ---------- Web Playback SDK ---------- */
+async function renderStats(m){
+  const ranges = [["short_term","4 สัปดาห์"],["medium_term","6 เดือน"],["long_term","1 ปี"]];
+  const [ar, tr] = await Promise.all([api(`/me/top/artists?limit=20&time_range=${statsRange}`), api(`/me/top/tracks?limit=20&time_range=${statsRange}`)]);
+  m.innerHTML = `${sec("สถิติการฟังของคุณ")}<div class="seg">${ranges.map(([k,l]) => `<button data-r="${k}" class="${k===statsRange?"on":""}">${l}</button>`).join("")}</div>
+    ${sec("ศิลปินที่ฟังมากที่สุด")}<div class="row">${(ar.items||[]).map((a,i) => `<div class="tile round" role="button" tabindex="0" data-ctx="${esc(a.uri)}"><div class="cover"><img src="${esc(img(a.images))}" alt="" loading="lazy"></div><span class="rank">${i+1}</span><b>${esc(a.name)}</b></div>`).join("") || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>
+    ${sec("เพลงที่ฟังมากที่สุด")}${tr.items?.length ? `<div class="actions" style="margin:-4px 0 18px"><button class="btn sm" id="saveTop">${I.plus} บันทึกเป็นเพลย์ลิสต์</button></div>` : ""}<div class="list">${trackList(tr.items||[]) || '<p class="empty">ยังไม่มีข้อมูล</p>'}</div>`;
+  m.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { statsRange = b.dataset.r; render() });
+  m.querySelectorAll("[data-ctx]").forEach(b => b.onclick = () => playContext(b.dataset.ctx));
+  const uris = (tr.items||[]).map(t => t.uri);
+  bindTracks(m, uris);
+  if ($("#saveTop")) $("#saveTop").onclick = async () => {
+    const label = ranges.find(r => r[0] === statsRange)[1];
+    try { const p = await createPlaylist(`Top 20 · ${label}`); await addToPlaylist(p.id, uris); toast("บันทึกเป็นเพลย์ลิสต์แล้ว") } catch (e) { toast("บันทึกไม่สำเร็จ: " + e.message) }
+  };
+}
+
+let sq = "", sItems = [], sOffset = 0, sTotal = 0;
+function renderSearch(m){
+  m.innerHTML = `<input class="search" id="q" placeholder="ค้นหาเพลง หรือศิลปิน…" autocomplete="off" value="${esc(sq)}"><div id="res" style="margin-top:12px"></div>`;
+  let timer; $("#q").oninput = e => { clearTimeout(timer); timer = setTimeout(() => doSearch(e.target.value), 400) };
+  if (sItems.length) drawSearch(); else $("#q").focus();
+}
+async function doSearch(q, more){
+  if (!more) { sq = q; sItems = []; sOffset = 0 }
+  const res = $("#res"); if (!res) return;
+  if (!sq.trim()) { res.innerHTML = ""; return }
+  try {
+    const d = await api(`/search?type=track&limit=10&offset=${sOffset}&q=${enc(sq)}`);
+    if (sq !== q && !more) return;
+    sItems = sItems.concat(d.tracks.items.filter(Boolean)); sTotal = d.tracks.total; sOffset += 10;
+    drawSearch();
+  } catch (e) { res.innerHTML = `<p class="empty">ค้นหาไม่สำเร็จ (${esc(e.message)})</p>` }
+}
+function drawSearch(){
+  const res = $("#res"); if (!res) return;
+  res.innerHTML = `<div class="list">${trackList(sItems) || '<p class="empty">ไม่พบผลลัพธ์</p>'}</div>${sItems.length && sOffset < Math.min(sTotal, 100) ? '<button class="loadmore" id="sm">แสดงเพิ่มอีก 10 เพลง</button>' : ""}`;
+  bindTracks(res, sItems.map(t => t.uri));
+  if ($("#sm")) $("#sm").onclick = () => doSearch(sq, true);
+  highlight();
+}
+
+async function openPlaylist(id){
+  const m = $("#main"); const p = plCache[id] || {};
+  m.innerHTML = `<button class="back" id="bk">‹ เพลย์ลิสต์ทั้งหมด</button>
+    <div class="phead"><div class="cover"><img src="${esc(bigImg(p.images))}" alt=""></div><div><small>เพลย์ลิสต์</small><h2>${esc(p.name)}</h2><p>${plTotal(p)} เพลง · ${p.owner?.id === me.id ? "ของฉัน" : "โดย " + esc(p.owner?.display_name || "ผู้อื่น")}</p>
+    <div class="actions"><button class="btn sm solid" id="plPlay">${I.play} เล่น</button><button class="btn sm" id="plShuf">${I.shuffle} สุ่มเล่น</button></div></div></div>
+    <div id="plBody" style="margin-top:28px"><p class="empty">กำลังโหลด…</p></div>`;
+  $("#bk").onclick = () => render();
+  const ctx = "spotify:playlist:" + id;
+  $("#plPlay").onclick = () => playContext(ctx);
+  $("#plShuf").onclick = () => playContext(ctx, true);
+  window.scrollTo({top:0});
+  const body = $("#plBody");
+  let items = [], offset = 0, total = 0;
+  const load = async () => {
+    const d = await apiTry([[`/playlists/${id}/items?limit=50&offset=${offset}`], [`/playlists/${id}/tracks?limit=50&offset=${offset}`]]);
+    total = d.total || 0; offset += 50;
+    items = items.concat((d.items||[]).map(i => i.item || i.track).filter(t => t && t.uri && t.type === "track"));
+    body.innerHTML = `<div class="list">${trackList(items) || '<p class="empty">ไม่มีเพลง</p>'}</div>${offset < total ? '<button class="loadmore" id="lm">โหลดเพิ่ม</button>' : ""}`;
+    bindTracks(body, items.map(t => t.uri), ctx);
+    if ($("#lm")) $("#lm").onclick = load;
+    highlight();
+  };
+  try { await load() }
+  catch (e) {
+    body.innerHTML = e.status === 403 || e.status === 404
+      ? `<div class="note">Spotify อนุญาตให้แอปส่วนตัวดูรายชื่อเพลงได้เฉพาะเพลย์ลิสต์ที่คุณสร้างหรือร่วมแก้ไข แต่ยังกด <b>เล่น</b> หรือ <b>สุ่มเล่น</b> ทั้งเพลย์ลิสต์ได้ตามปกติ</div>`
+      : `<p class="empty">โหลดไม่สำเร็จ (${esc(e.message)})</p>`;
+  }
+}
+
+/* ---------- Playback ---------- */
+const targetDevice = () => (cur?.source === "api" && cur.deviceId) ? cur.deviceId : deviceId;
+const isLocal = () => cur?.source === "sdk" && player;
+function playErr(e){ toast(e.status === 403 ? "ต้องใช้ Spotify Premium เพื่อสั่งเล่นเพลง" : e.status === 404 ? "ไม่พบอุปกรณ์สำหรับเล่น ลองรีเฟรชหน้าเว็บ" : "เล่นไม่สำเร็จ: " + e.message) }
+async function play(uri, uris, context){
+  const dev = targetDevice(); if (!dev) return notice();
+  const body = context ? { context_uri: context, offset: { uri } } : { uris: [...new Set(uris)].slice(0, 100), offset: { uri } };
+  try { await api(`/me/player/play?device_id=${dev}`, { method:"PUT", body: JSON.stringify(body) }); pollSoon() } catch (e) { playErr(e) }
+}
+async function playContext(ctx, shuffle){
+  const dev = targetDevice(); if (!dev) return notice();
+  try {
+    await api(`/me/player/play?device_id=${dev}`, { method:"PUT", body: JSON.stringify({ context_uri: ctx }) });
+    await api(`/me/player/shuffle?state=${!!shuffle}&device_id=${dev}`, { method:"PUT" }).catch(() => {});
+    if (shuffle) await api(`/me/player/next?device_id=${dev}`, { method:"POST" }).catch(() => {});
+    pollSoon();
+  } catch (e) { playErr(e) }
+}
+function playShuffled(uris){
+  const a = [...uris]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] }
+  play(a[0], a);
+}
+async function ctl(action, arg){
+  try {
+    if (action === "toggle") { if (isLocal()) return player.togglePlay(); if (!cur) return notice(); await api(cur.paused ? "/me/player/play" : "/me/player/pause", {method:"PUT"}); cur.paused = !cur.paused; paint() }
+    if (action === "next") { if (isLocal()) return player.nextTrack(); await api("/me/player/next", {method:"POST"}) }
+    if (action === "prev") { if (isLocal()) return player.previousTrack(); await api("/me/player/previous", {method:"POST"}) }
+    if (action === "seek") { if (isLocal()) return player.seek(Math.round(arg)); await api(`/me/player/seek?position_ms=${Math.round(arg)}`, {method:"PUT"}) }
+    if (action === "vol") { store.set("vol", arg); if (isLocal() || !cur) return player?.setVolume(arg/100); await api(`/me/player/volume?volume_percent=${arg}`, {method:"PUT"}) }
+    if (action === "shuffle") { if (!cur) return; await api(`/me/player/shuffle?state=${!cur.shuffle}`, {method:"PUT"}); cur.shuffle = !cur.shuffle; paint(); toast(cur.shuffle ? "เปิดสุ่มเพลง" : "ปิดสุ่มเพลง") }
+    if (action === "repeat") { if (!cur) return; const nx = {off:"context",context:"track",track:"off"}[cur.repeat || "off"]; await api(`/me/player/repeat?state=${nx}`, {method:"PUT"}); cur.repeat = nx; paint(); toast({off:"ปิดเล่นซ้ำ",context:"เล่นซ้ำทั้งรายการ",track:"เล่นซ้ำเพลงนี้"}[nx]) }
+    pollSoon();
+  } catch (e) { toast(e.status === 403 ? "อุปกรณ์นี้ไม่รองรับคำสั่งนี้" : "ทำไม่สำเร็จ: " + e.message) }
+}
+async function toggleLike(){
+  if (!cur || liked === null) return;
+  try { await setSaved(cur.uri, !liked); setLiked(!liked); toast(liked ? "เพิ่มในเพลงที่ถูกใจแล้ว" : "เอาออกจากเพลงที่ถูกใจแล้ว") } catch (e) { toast("ทำไม่สำเร็จ: " + e.message) }
+}
+function setLiked(v){ liked = v; const b = $("#npLike"); if (b) { b.innerHTML = v ? I.heartF : I.heart; b.classList.toggle("on", !!v) } }
+function notice(){
+  if ($(".notice") || !$("#main")) return;
+  $("#main").insertAdjacentHTML("afterbegin", `<div class="notice">ตัวเล่นเพลงบนเว็บยังไม่พร้อม — ต้องใช้ Spotify Premium และเปิดผ่าน Safari หรือ Chrome หรือเลือกเล่นบนอุปกรณ์อื่นในหน้า “กำลังเล่น → อุปกรณ์”</div>`);
+}
+function highlight(){ document.querySelectorAll(".track").forEach(b => b.classList.toggle("playing", b.dataset.uri === cur?.uri)) }
+
+/* Normalise state from the in-browser SDK or from the Web API (other devices) */
+function fromSDK(s){
+  const t = s.track_window.current_track;
+  return { source:"sdk", uri:t.uri, id:t.id, name:t.name, artists:artistsOf(t), img:t.album?.images?.[0]?.url || "", paused:s.paused, position:s.position, duration:s.duration, shuffle:s.shuffle, repeat:["off","context","track"][s.repeat_mode] || "off", device:"เว็บนี้", deviceId };
+}
+function fromAPI(p){
+  if (!p || !p.item) return null;
+  const t = p.item;
+  return { source:"api", uri:t.uri, id:t.id, name:t.name, artists:artistsOf(t) || t.show?.name || "", img:bigImg(t.album?.images || t.images), paused:!p.is_playing, position:p.progress_ms || 0, duration:t.duration_ms || 0, shuffle:p.shuffle_state, repeat:p.repeat_state || "off", device:p.device?.name || "", deviceId:p.device?.id, volume:p.device?.volume_percent };
+}
+function setCur(n){
+  const changed = n?.uri !== cur?.uri;
+  cur = n; paint();
+  if (changed) {
+    liked = null; setLiked(null);
+    if (cur) { remember({ uri:cur.uri, id:cur.id, name:cur.name, artists:[{name:cur.artists}], album:{images:[{url:cur.img}]} }); isSaved([cur.uri]).then(r => { if (cur?.uri === n.uri) setLiked(!!r?.[0]) }).catch(() => {}) }
+    if ($("#np")?.classList.contains("open")) loadNpPanel();
+  }
+}
+function paint(){
+  if (!$("#pName")) return;
+  const c = cur;
+  $("#pImg").src = c?.img || ""; $("#npImg").src = c?.img || "";
+  $("#pName").textContent = c?.name || "ยังไม่ได้เล่นเพลง"; $("#npName").textContent = c?.name || "ยังไม่ได้เล่นเพลง";
+  $("#pArt").textContent = c ? c.artists : "แตะเพลงเพื่อเริ่มเล่น"; $("#npArt").textContent = c?.artists || "";
+  $("#pDev").textContent = c && c.source === "api" && c.device ? "▸ กำลังเล่นบน " + c.device : "";
+  $("#npDev").textContent = c?.device ? (c.source === "sdk" ? "บนเว็บนี้" : "บน " + c.device) : "";
+  const icon = c && !c.paused ? I.pause : I.play;
+  $("#pp").innerHTML = icon; $("#npPP").innerHTML = icon;
+  for (const id of ["shuf","npShuf"]) { const b = $("#"+id); b.classList.toggle("on", !!c?.shuffle); b.classList.toggle("dim", !c?.shuffle) }
+  for (const id of ["rep","npRep"]) { const b = $("#"+id); const r = c?.repeat || "off"; b.classList.toggle("on", r !== "off"); b.classList.toggle("dim", r === "off"); b.innerHTML = I.repeat + (r === "track" ? '<span class="one">1</span>' : "") }
+  if (c?.source === "api" && typeof c.volume === "number") for (const id of ["vol","npVol"]) { $("#"+id).value = c.volume; $("#"+id).style.setProperty("--p", c.volume + "%") }
+  $("#pDur").textContent = fmt(c?.duration); $("#npDur").textContent = fmt(c?.duration);
+  paintPos(); highlight(); mediaSession();
+}
+function paintPos(){
+  const c = cur, p = c?.duration ? Math.min(1, c.position / c.duration) : 0;
+  $("#pCur").textContent = fmt(c?.position); $("#npCur").textContent = fmt(c?.position);
+  for (const id of ["seek","npSeek"]) { const s = $("#"+id); if (s && !s.dataset.drag) { s.value = p * 1000; s.style.setProperty("--p", p*100 + "%") } }
+}
+let msBound = false;
+function mediaSession(){
+  if (!("mediaSession" in navigator)) return;
+  if (!msBound) {
+    msBound = true;
+    const h = { play:() => ctl("toggle"), pause:() => ctl("toggle"), previoustrack:() => ctl("prev"), nexttrack:() => ctl("next"), seekto:d => ctl("seek", d.seekTime * 1000) };
+    for (const k in h) try { navigator.mediaSession.setActionHandler(k, h[k]) } catch {}
+  }
+  if (!cur) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({ title:cur.name, artist:cur.artists, album:"My Music", artwork: cur.img ? [{ src:cur.img, sizes:"640x640", type:"image/jpeg" }] : [] });
+    navigator.mediaSession.playbackState = cur.paused ? "paused" : "playing";
+  } catch {}
+}
+
+/* ---------- Now playing ---------- */
+function openNp(){ $("#np").classList.add("open"); document.body.classList.add("lock"); loadNpPanel() }
+function closeNp(){ $("#np")?.classList.remove("open"); document.body.classList.remove("lock") }
+async function loadNpPanel(){
+  const panel = $("#npPanel"); if (!panel) return;
+  const which = document.querySelector("[data-np].on")?.dataset.np || "queue";
+  panel.innerHTML = `<p class="empty">กำลังโหลด…</p>`;
+  try {
+    if (which === "queue") {
+      const q = await api("/me/player/queue");
+      const list = (q?.queue || []).filter(t => t?.uri).slice(0, 30);
+      panel.innerHTML = list.length ? trackList(list) : `<p class="empty">ยังไม่มีเพลงในคิว — เพิ่มได้จากปุ่ม ⋯ ข้างแต่ละเพลง</p>`;
+      bindTracks(panel, list.map(t => t.uri));
+    } else {
+      const d = await api("/me/player/devices");
+      const devs = d?.devices || [];
+      const ic = t => /phone|smartphone/i.test(t) ? I.phone : /speaker|avr|tv|cast/i.test(t) ? I.speaker : I.device;
+      panel.innerHTML = devs.length ? devs.map(v => `<button class="dev ${v.is_active ? "active" : ""}" data-dev="${esc(v.id)}">${ic(v.type)}<div><b>${esc(v.name)}${v.id === deviceId ? " (เว็บนี้)" : ""}</b><span>${esc(v.type)}${v.is_active ? " · กำลังเล่น" : ""}</span></div>${v.is_active ? `<span style="margin-left:auto;color:var(--gold)">${I.check}</span>` : ""}</button>`).join("")
+        + `<div class="note">ไม่เห็นอุปกรณ์ที่ต้องการ? เปิดแอป Spotify บนเครื่องนั้นก่อน แล้วกลับมากดรีเฟรช</div>`
+        : `<p class="empty">ไม่พบอุปกรณ์ — เปิดแอป Spotify บนมือถือหรือลำโพงก่อน</p>`;
+      panel.querySelectorAll("[data-dev]").forEach(b => b.onclick = async () => {
+        try { await api("/me/player", { method:"PUT", body: JSON.stringify({ device_ids:[b.dataset.dev], play:true }) }); toast("ย้ายไปเล่นที่ " + b.querySelector("b").textContent); setTimeout(() => { pollRemote(); loadNpPanel() }, 1200) }
+        catch (e) { toast("ย้ายอุปกรณ์ไม่สำเร็จ: " + e.message) }
+      });
+    }
+  } catch (e) { panel.innerHTML = `<p class="empty">โหลดไม่สำเร็จ (${esc(e.message)})</p>` }
+}
+
+/* ---------- Web Playback SDK + remote polling ---------- */
+async function pollRemote(){
+  if (cur?.source === "sdk" && !cur.paused) return;
+  try { const p = await api("/me/player"); const n = fromAPI(p); if (n && n.deviceId === deviceId && player) return; setCur(n) } catch {}
+}
+let pollT; function pollSoon(){ clearTimeout(pollT); pollT = setTimeout(pollRemote, 700) }
 function initPlayer(){
   window.onSpotifyWebPlaybackSDKReady = () => {
-    player = new Spotify.Player({ name:"My Music Web Player", getOAuthToken: async cb => cb(await token()), volume:0.7 });
+    player = new Spotify.Player({ name:"My Music Web Player", getOAuthToken: async cb => cb(await token()), volume: (+store.get("vol") || 70) / 100 });
     player.addListener("ready", ({ device_id }) => { deviceId = device_id });
     player.addListener("not_ready", () => { deviceId = null });
     player.addListener("account_error", () => { player = null; notice() });
-    player.addListener("initialization_error", () => { player = null; notice() });
+    player.addListener("initialization_error", () => { player = null });
     player.addListener("authentication_error", () => logout());
-    player.addListener("player_state_changed", s => { state = s; updateBar() });
+    player.addListener("player_state_changed", s => { if (!s) { if (cur?.source === "sdk") { cur = null; pollRemote() } return } setCur(fromSDK(s)) });
     player.connect();
   };
   const sc = document.createElement("script"); sc.src = "https://sdk.scdn.co/spotify-player.js"; document.body.appendChild(sc);
-  clearInterval(posTimer);
-  posTimer = setInterval(() => { if (state && !state.paused) { state.position = Math.min(state.position + 1000, state.duration); updateBar(true) } }, 1000);
-}
-function updateBar(onlyPos){
-  if (!state) return;
-  const t = state.track_window.current_track;
-  if (!onlyPos) {
-    $("#pImg").src = t.album.images[0]?.url || "";
-    $("#pName").textContent = t.name;
-    $("#pArt").textContent = t.artists.map(a => a.name).join(", ");
-    $("#pp").innerHTML = state.paused ? I.play : I.pause;
-    $("#pDur").textContent = fmt(state.duration);
-    highlight();
-  }
-  $("#pCur").textContent = fmt(state.position);
-  const s = $("#seek");
-  if (document.activeElement !== s) { const p = state.duration ? state.position / state.duration * 100 : 0; s.value = p; s.style.setProperty("--p", p + "%") }
+  const v = +store.get("vol") || 70; for (const id of ["vol","npVol"]) { $("#"+id).value = v; $("#"+id).style.setProperty("--p", v + "%") }
+  setInterval(() => { if (cur && !cur.paused) { cur.position = Math.min(cur.position + 1000, cur.duration); paintPos() } }, 1000);
+  setInterval(() => { if (!document.hidden) pollRemote() }, 5000);
+  pollRemote();
 }
 
 /* ---------- Start ---------- */
 (async () => {
   if (!store.get("client_id")) return setupScreen();
   try { await handleCallback() } catch (e) { alert("เข้าสู่ระบบไม่สำเร็จ: " + e.message) }
+  if (store.get("access") && store.get("scope_ver") !== SCOPE_VER) {
+    ["access","refresh","expires"].forEach(store.del);
+    return loginScreen("มีฟีเจอร์ใหม่ กรุณาเข้าสู่ระบบอีกครั้งเพื่ออนุญาตสิทธิ์เพิ่มเติม");
+  }
   if (!(await token())) return loginScreen();
   try { me = await api("/me") } catch { return loginScreen() }
   shell(); render(); initPlayer();
